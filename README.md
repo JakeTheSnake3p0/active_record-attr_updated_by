@@ -1,4 +1,6 @@
 # `active_record-attr_updated_by`
+[![Build Status](https://travis-ci.org/JakeTheSnake3p0/active_record-attr_updated_by.svg?branch=master)](https://travis-ci.org/JakeTheSnake3p0/active_record-attr_updated_by?branch=master)
+
 Updates the timestamp of the attribute you specify based on other attributes.
 
 For example, let's say you wanted to have your event RSS feed update only when the `start_time` or `end_time` attributes have changed. We don't want it to be updated if a user makes a typo edit to the description! Instead of using `updated_at`, we will use `rss_updated_at` in our feed view.
