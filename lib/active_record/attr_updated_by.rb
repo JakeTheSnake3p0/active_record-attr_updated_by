@@ -7,7 +7,7 @@ module ActiveRecord
     extend ActiveSupport::Concern
 
     included do
-      before_save :attr_updated_by_update_timestamps!, :if => Proc.new { |_| AttrWatcher.instance.watched(self).any? }
+      before_save :attr_updated_by_update_timestamps!, :if => Proc.new { |_| !AttrWatcher.instance.watched(self).nil? }
 
       after_initialize do
         # Do not affect classes which are not using attr_updated_by
