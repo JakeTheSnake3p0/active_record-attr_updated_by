@@ -1,0 +1,14 @@
+language: ruby
+cache: bundler
+ 
+rvm:
+  - 2.1.5
+ 
+script: 'bundle exec rake'
+ 
+notifications:
+  email:
+    recipients:
+      - jakethesnake3p0@gmail.com
+    on_failure: change
+    on_success: neve
