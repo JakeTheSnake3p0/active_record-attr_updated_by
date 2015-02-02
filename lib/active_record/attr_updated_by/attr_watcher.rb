@@ -13,7 +13,7 @@ module ActiveRecord
         end
       end
       def watched(klass)
-        @watched[klass.model_name]
+        @watched[klass.try(:model_name)]
       end
     end
   end
