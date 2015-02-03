@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    active_record-attr_updated_by (0.0.2)
+    active_record-attr_updated_by (0.0.3)
 
 GEM
   remote: https://rubygems.org/
