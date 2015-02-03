@@ -27,9 +27,11 @@ describe ActiveRecord::AttrUpdatedBy do
         expect(no_associations.timestamped_at).to be_nil
         # Trigger a change in the model
         no_associations.marked_for_change = true
-        no_associations.save!
-        no_associations.reload
-        expect(no_associations.timestamped_at.to_i).to eq(Time.now.to_i)
+        Timecop.freeze(Time.now + 2.seconds) do
+          no_associations.save!
+          no_associations.reload
+          expect(no_associations.timestamped_at.to_i).to eq(Time.now.to_i)
+        end
       end
       it "unless the instance hasn't been updated" do
         expect(no_associations.timestamped_at).to be_nil
