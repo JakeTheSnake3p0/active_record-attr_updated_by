@@ -40,6 +40,7 @@ module ActiveRecord
         if self.class.column_names.include?(att.to_s)
           # Type checking on instantiation of object
           if has_attribute?(att)
+<<<<<<< HEAD
             unless self[att].is_a?(Time) || self[att].is_a?(DateTime) || self[att].is_a?(NilClass)
               raise(ArgumentError, 'must be a timestamp')
             end
@@ -47,12 +48,19 @@ module ActiveRecord
             # If the attribute isn't loaded, don't check for associations.
             # The attribute may not have been loaded for a reason
             next
+=======
+            raise(ArgumentError, "must be a Time object") unless self[att].kind_of?(Time) || self[att].kind_of?(NilClass)
+          else
+            # If the attribute isn't loaded, don't check for associations.
+            # The attribute may not have been loaded for a reason
+            return
+>>>>>>> bdd0d9bcf8b0882f859f1ff2dc52d7e744fef0f3
           end
         else
           raise UnknownAttributeError.new(self, att)
         end
         attr_associations.each do |association|
-          # The associated methods must also exist
+          # The associated instance methods must also exist
           raise UnknownAttributeError.new(self, association) unless has_attribute?(association)
         end
       end
