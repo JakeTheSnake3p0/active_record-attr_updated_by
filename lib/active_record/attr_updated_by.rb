@@ -7,31 +7,27 @@ module ActiveRecord
     extend ActiveSupport::Concern
 
     included do
-      before_save :attr_updated_by_update_timestamps!, :if => Proc.new { |_| AttrWatcher.instance.watching?(self.class.to_s) }
-      after_initialize :check_arguments!, :if => Proc.new { |_| AttrWatcher.instance.watching?(self.class.to_s) }
+      before_save :attr_updated_by_update_timestamps!, if: proc { AttrWatcher.instance.watching?(self) }
+      after_initialize :check_arguments!, if: proc { AttrWatcher.instance.watching?(self) }
     end
 
     module ClassMethods
-      def updates_timestamp_on(att, args={})
-        AttrWatcher.instance.watch self, att => (args[:using] || []).flat_map { |m| m.to_sym }
+      def updates_timestamp_on(att, args = {})
+        AttrWatcher.instance.watch self, att => (args[:using] || []).flat_map(&:to_sym)
       end
     end
 
     def attr_updated_by_update_timestamps!
-      # Do not affect classes which are not using attr_updated_by
       AttrWatcher.instance.watched(self).each do |att, attr_associations|
-        if attr_associations.any?
-          # Update the attribute based on its associations
-          attr_associations.each do |association|
-            if send("#{ association }_changed?")
-              self[att] = current_time_from_proper_timezone
-              break
-            end
-          end
-        else
+        if attr_associations.empty?
           # Update the attribute if anything
           # in the instance has changed
           self[att] = current_time_from_proper_timezone if changed?
+          next
+        end
+        # Update the attribute based on its associations
+        if attr_associations.any? { |association| send("#{ association }_changed?") }
+          self[att] = current_time_from_proper_timezone
         end
       end
     end
@@ -43,7 +39,7 @@ module ActiveRecord
         # The attribute being updated must exist
         if has_attribute?(att)
           # Type checking
-          raise(ArgumentError, "must be a Time object") unless self[att].kind_of?(Time) || self[att].kind_of?(NilClass)
+          raise(ArgumentError, 'must be a Time object') unless self[att].kind_of?(Time) || self[att].is_a?(NilClass)
         else
           raise UnknownAttributeError.new(self, att)
         end

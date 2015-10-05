@@ -15,7 +15,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'active_record/attr_updated_by'
-ActiveRecord::Base.establish_connection adapter: "sqlite3", database: ":memory:"
+ActiveRecord::Base.establish_connection adapter: 'sqlite3', database: ':memory:'
 require File.dirname(__FILE__) + '/support/schema'
 require File.dirname(__FILE__) + '/support/models'
 require 'timecop'
@@ -45,8 +45,8 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-# The settings below are suggested to provide a good initial experience
-# with RSpec, but feel free to customize to your heart's content.
+  # The settings below are suggested to provide a good initial experience
+  # with RSpec, but feel free to customize to your heart's content.
 
   # These two settings work together to allow you to limit a spec run
   # to individual examples or groups you care about by tagging them with
@@ -94,5 +94,4 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 
   config.expose_dsl_globally = true
-
 end
