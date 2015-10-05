@@ -36,10 +36,18 @@ module ActiveRecord
       # Do not affect classes which are not using attr_updated_by
       # Validate presence of methods!
       AttrWatcher.instance.watched(self).each do |att, attr_associations|
-        # The attribute being updated must exist
-        if has_attribute?(att)
-          # Type checking
-          raise(ArgumentError, 'must be a Time object') unless self[att].kind_of?(Time) || self[att].is_a?(NilClass)
+        # The attribute being updated must exist in the database
+        if self.class.column_names.include?(att.to_s)
+          # Type checking on instantiation of object
+          if has_attribute?(att)
+            unless self[att].is_a?(Time) || self[att].is_a?(DateTime) || self[att].is_a?(NilClass)
+              raise(ArgumentError, 'must be a timestamp')
+            end
+          else
+            # If the attribute isn't loaded, don't check for associations.
+            # The attribute may not have been loaded for a reason
+            next
+          end
         else
           raise UnknownAttributeError.new(self, att)
         end
